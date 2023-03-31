@@ -17,7 +17,7 @@ ADD COLUMN encuesta_satisfaccion encuesta;
 ---5
 SELECT ad.nombre,h.nombre,r.fecha_ingreso,r.hora_ingreso
 FROM (administrador ad JOIN reserva r on (ad.cedula = r.cedula_administrador)) join hotel h on (h.nit = r.nit_hotel)
-WHERE r.total_reserva > 10;
+WHERE r.numero_dias > 10;
 ---6
 CREATE USER Administrador WITH PASSWORD 'admin*12';
 GRANT insert, update on reserva to Administrador;
