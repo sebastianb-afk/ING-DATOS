@@ -1,0 +1,33 @@
+##Escribir la sentencia SQL que funcione sin errores en PostgreSQL, usando
+agregación avanzada, para calcular el rango para los trailer de acuerdo con la película
+y con el promedio de duración mostrando los datos de menor a mayor
+
+SELECT RANK() OVER(ORDER BY(duracion)desc) as promedio_duracion, codigo_pelicula, avg(duracion)
+FROM trailer
+GROUP BY codigo_pelicula
+ORDER BY promedio_duracion;
+
+
+## Escribir las sentencias SQL que funcione sin errores en PostgreSQL,
+usando consultas recursivas, para obtener los directores de Meryl Streep.
+
+WITH RECURSIVE directores AS (
+  SELECT id_actor, director
+  FROM director
+  WHERE id_actor in (
+    SELECT id
+    FROM actor
+    WHERE nombre = "Meryl Streep"
+  ) UNION 
+  SELECT r.id_actor, r.director
+  FROM director dir inner join directores r on (dir.id_actor = r.director) 
+) SELECT * FROM directores;
+
+##Escribir las sentencias SQL que funcione sin errores en PostgreSQL,
+utilizando ROLLUP, para obtener el promedio de la duración de las películas de acuerdo
+con el estudio y el género.
+
+SELECT estudio, genero, avg(duracion) 
+FROM pelicula
+GROUP BY rollup(estudio, genero);
+
