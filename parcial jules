@@ -1,0 +1,80 @@
+create table turista(
+	cedula numeric(12,0),
+	nombre varchar(50) not null,
+	fecha_nacimiento date,
+	primary key (cedula)
+)
+
+create table vendedor(
+	codigo numeric(12,0),
+	nombre varchar(50),
+	salario numeric(12,2),
+	primary key(codigo)
+)
+
+
+create table agencia(
+	nit numeric(12,2),
+	nombre varchar(50),
+	telefono varchar(10),
+	ciudad varchar(20),
+	numero_vendedores int,
+	primay key (nit)
+)
+
+create table venta(
+	codigo int,
+	fecha date,
+	hora time,
+	plan_ofrecido varchar (50),
+	cedula_turista numeric(12,0) not null,
+	codigo_vendedor numeric(12,0) not null,
+	nit_agencia numeric (12,20) not null,
+	primary key(codigo),
+	foreign key (cedula_turista) references turista(cedula),
+	foreign key (codigo_vendedor) references 	vendedor(codigo),
+	foreign key(nit_agencia) references agencia(nit)
+)
+
+
+
+1.
+create view vente as(select * from agencia natural join venta where hora>'13:00' and hora<'17:00' and date>'05/31/2023' and date<'07/01/2023')
+
+create view vente as(select a.nit, a.nombre, a.telefono, a.ciudad, a.numero_vendedores from ventas as v, agencia as a where a.nit=v.nit_agencia v.hora>'13:00' and v.hora<'17:00' and v.date>'05/31/2023' and v.date<'07/01/2023')
+
+2. 
+select * from vendedor where nombre like 'A%' left join venta where venta.codigo_vendedor is null
+
+select * from vendedor where nombre like 'A%' natural left outer join venta where venta.codigo_vendedor is null
+
+3.
+alter table venta add check (hora>'8:00:00' and hora<'5:00:01)
+
+4.
+create type genero as enum ('F','M','NB')
+
+alter table vendedor add column generos genero
+
+5.
+select a.nombre, ven.nombre, v.fecha, v.hora from venta as v, vendedor as ven,agencia as a where v.plan_ofrecido= 'Orlando'
+
+select a.nombre, ven.nombre, v.fecha, v.hora from(vendedor as ven join venta as v on(ven.codigo=v.codigo_vendedor and v.plan_ofrecido='Orlando'))join agencia as a on(a.nit=v.nit_agencia))
+
+select a.nombre, ven.nombre, v.fecha, v.hora from agencia as a inner join venta as v on (a.nit=v.nit_agencia) inner join vendedor as ven on (ven.codigo=v.codigo_vendedor) where v.plan_ofrecido='Orlando'
+
+6.
+create user monitor with 
+login
+nosuperuser
+nocreatedb
+nocreaterole
+herit
+noreplication
+connection limit -1
+password 'monitor*123'
+
+grant insert, drop, delete on venta to monitor
+
+
+	
